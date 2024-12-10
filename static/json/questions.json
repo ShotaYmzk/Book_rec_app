@@ -1,0 +1,167 @@
+[
+    {
+        "id": 1,
+        "question": "Pythonでリストを初期化する方法は？",
+        "options": [
+            { "text": "list = [1, 2, 3]", "isCorrect": true },
+            { "text": "list = (1, 2, 3)", "isCorrect": false },
+            { "text": "list = {1, 2, 3}", "isCorrect": false },
+            { "text": "list = <1, 2, 3>", "isCorrect": false }
+        ],
+        "difficulty": 1
+    },
+    {
+        "id": 2,
+        "question": "Pythonで辞書型を表す記号は？",
+        "options": [
+            { "text": "{ }", "isCorrect": true },
+            { "text": "[ ]", "isCorrect": false },
+            { "text": "( )", "isCorrect": false },
+            { "text": "< >", "isCorrect": false }
+        ],
+        "difficulty": 1
+    },
+    {
+        "id": 3,
+        "question": "Pythonでクラスを定義するキーワードは？",
+        "options": [
+            { "text": "class", "isCorrect": true },
+            { "text": "def", "isCorrect": false },
+            { "text": "function", "isCorrect": false },
+            { "text": "method", "isCorrect": false }
+        ],
+        "difficulty": 1
+    },
+    {
+        "id": 4,
+        "question": "例外処理でゼロ除算をキャッチするには？",
+        "options": [
+            { "text": "ZeroDivisionError", "isCorrect": true },
+            { "text": "DivisionError", "isCorrect": false },
+            { "text": "ZeroError", "isCorrect": false },
+            { "text": "ArithmeticError", "isCorrect": false }
+        ],
+        "difficulty": 2
+    },
+    {
+        "id": 5,
+        "question": "Pythonで無限ループを作るには？",
+        "options": [
+            { "text": "while True", "isCorrect": true },
+            { "text": "for True", "isCorrect": false },
+            { "text": "while 1", "isCorrect": false },
+            { "text": "loop()", "isCorrect": false }
+        ],
+        "difficulty": 2
+    },
+    {
+        "id": 6,
+        "question": "Pythonで関数を定義するキーワードは？",
+        "options": [
+            { "text": "def", "isCorrect": true },
+            { "text": "func", "isCorrect": false },
+            { "text": "define", "isCorrect": false },
+            { "text": "lambda", "isCorrect": false }
+        ],
+        "difficulty": 1
+    },
+    {
+        "id": 7,
+        "question": "Pythonでリスト内包表記を使うとき、正しい記述はどれ？",
+        "options": [
+            { "text": "[x for x in range(5)]", "isCorrect": true },
+            { "text": "{x for x in range(5)}", "isCorrect": false },
+            { "text": "(x for x in range(5))", "isCorrect": false },
+            { "text": "<x for x in range(5)>", "isCorrect": false }
+        ],
+        "difficulty": 2
+    },
+    {
+        "id": 8,
+        "question": "Pythonでデコレータを使用する際の記号は？",
+        "options": [
+            { "text": "@", "isCorrect": true },
+            { "text": "#", "isCorrect": false },
+            { "text": "%", "isCorrect": false },
+            { "text": "&", "isCorrect": false }
+        ],
+        "difficulty": 3
+    },
+    {
+        "id": 9,
+        "question": "ジェネレータ関数の定義に必要なキーワードは？",
+        "options": [
+            { "text": "yield", "isCorrect": true },
+            { "text": "return", "isCorrect": false },
+            { "text": "generate", "isCorrect": false },
+            { "text": "async", "isCorrect": false }
+        ],
+        "difficulty": 3
+    },
+    {
+        "id": 10,
+        "question": "Pythonでグローバル変数を宣言するキーワードは？",
+        "options": [
+            { "text": "global", "isCorrect": true },
+            { "text": "nonlocal", "isCorrect": false },
+            { "text": "static", "isCorrect": false },
+            { "text": "local", "isCorrect": false }
+        ],
+        "difficulty": 3
+    },
+    {
+        "id": 11,
+        "question": "Pythonでカプセル化を実現するために使用される記号は？",
+        "options": [
+            { "text": "_", "isCorrect": true },
+            { "text": "@", "isCorrect": false },
+            { "text": "#", "isCorrect": false },
+            { "text": "&", "isCorrect": false }
+        ],
+        "difficulty": 3
+    },
+    {
+        "id": 12,
+        "question": "Pythonでオブジェクトのメモリサイズを取得する関数は？",
+        "options": [
+            { "text": "sys.getsizeof", "isCorrect": true },
+            { "text": "size", "isCorrect": false },
+            { "text": "memory", "isCorrect": false },
+            { "text": "sizeof", "isCorrect": false }
+        ],
+        "difficulty": 4
+    },
+    {
+        "id": 13,
+        "question": "Pythonの標準ライブラリでデータ圧縮を行うモジュールは？",
+        "options": [
+            { "text": "zlib", "isCorrect": true },
+            { "text": "compress", "isCorrect": false },
+            { "text": "gzip", "isCorrect": false },
+            { "text": "lzma", "isCorrect": false }
+        ],
+        "difficulty": 4
+    },
+    {
+        "id": 14,
+        "question": "Pythonで型ヒントを提供するモジュールは？",
+        "options": [
+            { "text": "typing", "isCorrect": true },
+            { "text": "types", "isCorrect": false },
+            { "text": "hints", "isCorrect": false },
+            { "text": "annotations", "isCorrect": false }
+        ],
+        "difficulty": 4
+    },
+    {
+        "id": 15,
+        "question": "Pythonで非同期関数を定義するキーワードは？",
+        "options": [
+            { "text": "async", "isCorrect": true },
+            { "text": "await", "isCorrect": false },
+            { "text": "asynchronous", "isCorrect": false },
+            { "text": "nonblock", "isCorrect": false }
+        ],
+        "difficulty": 5
+    }
+]

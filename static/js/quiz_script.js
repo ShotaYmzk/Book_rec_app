@@ -26,8 +26,19 @@ function showQuestion() {
     const questionContainer = document.getElementById("question-container");
     const submitButton = document.getElementById("submit-answer");
 
+    // 10問目以降で診断結果を表示
+    if (currentQuestionIndex >= 10) {
+        questionContainer.innerHTML = `<p>すべての質問が終了しました。</p>`;
+        submitButton.style.display = "block"; // 「診断する」ボタンを表示
+        submitButton.disabled = false;
+        submitButton.onclick = displayResults; // 診断するボタンの動作
+        return;
+    }
+
+    submitButton.style.display = "none"; // 診断ボタンを非表示
+
     // 質問が尽きた場合は結果表示
-    if (currentQuestionIndex >= questions.length) {
+    if (currentQuestionIndex >= questions.length - 5) {
         submitButton.textContent = "診断する";
         submitButton.onclick = displayResults;
         submitButton.disabled = false;
@@ -66,12 +77,15 @@ function handleAnswer(currentQuestion) {
     }
 
     const isCorrect = selectedOption.value === "true";
-    if (isCorrect) {
-        score += currentDifficulty * 10; // 正解でスコア加算
-        currentDifficulty = Math.min(currentDifficulty + 1, 5); // 難易度を上げる
-    } else {
-        currentDifficulty = Math.max(currentDifficulty - 1, 1); // 難易度を下げる
-    }
+
+   // JSONから取得した難易度を利用してスコアを計算
+   const questionDifficulty = currentQuestion.difficulty; // 難易度を取得
+   if (isCorrect) {
+       score += questionDifficulty * 2; // 難易度に基づいてスコア加算
+   }
+
+    console.log(`問題: ${currentQuestionIndex + 1}, 難易度: ${questionDifficulty}, 現在のスコア: ${score}`);
+
     currentQuestionIndex++; // 次の質問に進む
     showQuestion(); // 次の質問を表示
 }
@@ -84,6 +98,9 @@ function displayResults() {
     // クイズ部分を非表示にし、結果部分を表示
     quizContainer.style.display = "none";
     recommendationsContainer.style.display = "block";
+
+    //score = score * 1.7;
+    console.log("送信スコア:", score);
 
     // サーバーにスコアを送信して推薦結果を取得
     fetch("/recommend", {
@@ -98,9 +115,11 @@ function displayResults() {
             return response.json();
         })
         .then(data => {
+            console.log("サーバーからのレスポンス:", data); // デバッグ用
+
             // ユーザーレベルを表示
             document.getElementById("user-level").innerHTML = `<h3>あなたのスキルレベル: <span style="color: var(--secondary-color);">${data.level}</span></h3>`;
-
+            console.log("サーバーからのdata.level:", data.level); // デバッグ用
             // 推薦された本を表示
             const bookList = document.getElementById("recommended-books");
             bookList.innerHTML = "<h3>推薦された本:</h3>";
@@ -125,6 +144,7 @@ function displayResults() {
         })
         .catch(error => {
             console.error("推薦システムのエラー:", error);
+            console.log("受信したデータ:", data);
             alert("推薦結果を取得できませんでした。");
         });
 }

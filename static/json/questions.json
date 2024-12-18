@@ -72,7 +72,7 @@
             { "text": "[x for x in range(5)]", "isCorrect": true },
             { "text": "{x for x in range(5)}", "isCorrect": false },
             { "text": "(x for x in range(5))", "isCorrect": false },
-            { "text": "<x for x in range(5)>", "isCorrect": false }
+            { "text": "&#60;x for x in range(5)&#62;", "isCorrect": false }
         ],
         "difficulty": 2
     },

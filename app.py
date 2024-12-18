@@ -1,17 +1,21 @@
-from flask import Flask, json, request, jsonify, render_template
+from flask import * 
 import pandas as pd
+import os
+import logging
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 # 本のデータCSV
-BOOKS_FILE = "/static/csv/final_detail.csv"
+BOOKS_FILE = "static/csv/final_detail.csv"
+#問題
+QUESTIONS_FILE = '/static/json/questions.json'
 
 # ユーザーのスキルレベルに基づく難易度範囲
 DIFFICULTY_RANGES = {
-    "初級者": (0, 50),
-    "中級者": (50, 75),
-    "上級者": (75, 90),
-    "エキスパート": (90, 100)
+    "初級者": (0, 10),
+    "中級者": (10, 20),
+    "上級者": (20, 30),
+    "エキスパート": (30, 40)
 }
 
 @app.route('/')
@@ -19,21 +23,29 @@ def index():
     """
     メインページを表示
     """
-    return app.send_static_file('static/html/index.html')
+    return app.send_static_file('html/index.html')
 
 @app.route('/questions', methods=['GET'])
 def get_problems():
-    with open('/static/json/questions.json', 'r', encoding='utf-8') as file:  # 
+    with open(QUESTIONS_FILE, 'r', encoding='utf-8') as file:  
         questions = json.load(file)
     return jsonify(questions)
 
-@app.route('/recommend', methods=['POST'])
+@app.route('/recommend', methods=['GET','POST'])
 def recommend_books():
+    logging.info(f"Request received: {request.json}")
     """
     ユーザーのスコアを受け取り、本を推薦
     """
     # クライアントからスコアを取得
-    user_score = request.json.get("score", 0)
+    try:
+        user_score = request.json.get("score", 0)
+        print("Received score:", user_score)  # デバッグログ
+        if user_score is None:
+            return jsonify({"error": "スコアが提供されていません。"}), 400
+    except Exception as e:
+        print("Error reading score from request:", e)
+        return jsonify({"error": "リクエストからスコアを読み取れませんでした。"}), 400
 
     # CSVデータを読み込む
     try:
@@ -55,11 +67,22 @@ def recommend_books():
     else:
         user_level = "未知"
 
-    # 難易度で本を絞り込む
-    filtered_books = df[(df["Diff"] >= low) & (df["Diff"] <= high)]
-    if filtered_books.empty:
+    # スコアを 85 点満点にスケーリング
+    user_score_scaled = user_score * 85 / 38
+
+    # スコアに最も近い Diff を抽出
+    df["ScoreDiff"] = abs(df["Diff"] - user_score_scaled)
+
+    # 上下合わせて10冊を選択
+    top_10_books = df.nsmallest(10, "ScoreDiff")
+
+    # デバッグ用: 選択された本のタイトルを出力
+    if top_10_books.empty:
+        print("No books found.")
         return jsonify({"error": "適切な本が見つかりませんでした。"}), 404
-    top_10_books = filtered_books.sort_values("Diff", ascending=False).head(10)
+
+    print("Selected Books:")
+    print(top_10_books[["Title", "Diff", "ScoreDiff"]])
 
     # 金額が最安値の本
     cheapest_book = top_10_books.loc[top_10_books["Price"].idxmin()]
@@ -86,6 +109,7 @@ def recommend_books():
             for _, book in pd.DataFrame(recommended_books).iterrows()
         ]
     }
+    print("Response data:", response)  # デバッグログ
     return jsonify(response)
 
 if __name__ == "__main__":

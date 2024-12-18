@@ -9,8 +9,6 @@ let questions = [];
 async function loadQuestions() {
     try {
         const response = await fetch('/static/json/questions.json');
-        console.log("HTTP Status Code:", response.status);
-        console.log("Fetching from:", response.url); // URLを確認
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -74,61 +72,62 @@ function handleAnswer(currentQuestion) {
     } else {
         currentDifficulty = Math.max(currentDifficulty - 1, 1); // 難易度を下げる
     }
-    //answeredQuestions++;
     currentQuestionIndex++; // 次の質問に進む
     showQuestion(); // 次の質問を表示
 }
 
-document.getElementById("submit-answer").addEventListener("click", async () => {
-    // サーバーにスコアを送信
-    const response = await fetch("/recommend", {
+// スコアの結果を表示
+function displayResults() {
+    const quizContainer = document.getElementById("quiz-container");
+    const recommendationsContainer = document.getElementById("recommendations");
+
+    // クイズ部分を非表示にし、結果部分を表示
+    quizContainer.style.display = "none";
+    recommendationsContainer.style.display = "block";
+
+    // サーバーにスコアを送信して推薦結果を取得
+    fetch("/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ score })
-    });
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`サーバーエラー: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // ユーザーレベルを表示
+            document.getElementById("user-level").innerHTML = `<h3>あなたのスキルレベル: <span style="color: var(--secondary-color);">${data.level}</span></h3>`;
 
-    // サーバーからのレスポンスを確認
-    if (!response.ok) {
-        console.error("サーバーエラー:", response.status, response.statusText);
-        alert("推薦システムでエラーが発生しました。");
-        return;
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-        alert(data.error);
-        return;
-    }
-
-    // 推薦結果を表示
-    document.getElementById("quiz-container").style.display = "none";
-    document.getElementById("recommendations").style.display = "block";
-
-    document.getElementById("user-level").innerHTML = `<h3>あなたのスキルレベル: <span style="color: var(--secondary-color);">${data.level}</span></h3>`;
-
-    // 推薦された本を表示
-    const bookList = document.getElementById("recommended-books");
-    bookList.innerHTML = "<h3>推薦された本:</h3>";
-    data.recommended_books.forEach(book => {
-        bookList.innerHTML += `
-            <div class="book-card">
-                <a href="${book.URL}" target="_blank">
-                    <img src="${book.image}" alt="${book.title}" style="width:100px;">
-                    <h4 class="book-title">${book.title}</h4>
-                    <div class="book-info">
-                        <span>金額: ${book.price} 円</span>
-                        <span>ページ数: ${book.pages}</span>
-                        <span>発行年度: ${book.year}</span>
+            // 推薦された本を表示
+            const bookList = document.getElementById("recommended-books");
+            bookList.innerHTML = "<h3>推薦された本:</h3>";
+            data.recommended_books.forEach(book => {
+                bookList.innerHTML += `
+                    <div class="book-card">
+                        <a href="${book.URL}" target="_blank">
+                            <img src="${book.image || '/static/images/default.png'}" alt="${book.title}" style="width:100px;">
+                            <h4 class="book-title">${book.title}</h4>
+                            <div class="book-info">
+                                <span>金額: ${book.price} 円</span>
+                                <span>ページ数: ${book.pages}</span>
+                                <span>発行年度: ${book.year}</span>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-        `;
-    });
+                `;
+            });
 
-    // 結果までスクロール
-    document.getElementById("recommendations").scrollIntoView({ behavior: "smooth" });
-});
+            // 推薦結果のコンテナまでスクロール
+            recommendationsContainer.scrollIntoView({ behavior: "smooth" });
+        })
+        .catch(error => {
+            console.error("推薦システムのエラー:", error);
+            alert("推薦結果を取得できませんでした。");
+        });
+}
 
 // 初期化
 document.addEventListener("DOMContentLoaded", () => {
